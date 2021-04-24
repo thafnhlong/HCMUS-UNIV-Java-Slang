@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -29,6 +30,10 @@ public class Manager {
             singleton = new Manager();
         }
         return singleton;
+    }
+
+    public List<String> getDefinitions(String kw){
+        return DB.get(kw);
     }
 
     public SlangWord getRandomWord(){

@@ -2,6 +2,7 @@ package Menu;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import Slang.Manager;
 
@@ -43,6 +44,10 @@ public class Menu {
             System.out.println("9.Đố vui");
             System.out.println("0.Thoát chương trình");
         }
+        else if (mid == 1){
+            System.out.println("> Tìm kiếm theo slang word");
+            System.out.print("> Nhập slang word: ");
+        }
         else if (mid==7) {
             System.out.println("> Khôi phục slang word");
             System.out.println("> Bạn có chắc khôi phục từ điển về ban đầu không?");
@@ -80,6 +85,13 @@ public class Menu {
             System.out.print("Không hợp lệ, vui lòng nhập lại: ");
         }
     }
+    public String readStringInput(){
+        try {
+            return Screen.br.readLine();
+        } catch (IOException e) {
+        }
+        return "";
+    }
     public String readFileExist(){
         while(true){
             System.out.print("Vui lòng nhập đường dẫn file: ");
@@ -91,6 +103,14 @@ public class Menu {
             }
             System.out.println("File không hợp lệ");
         }
+    }
+
+    public StringBuilder ListToString(List<String> inp){
+        StringBuilder sb = new StringBuilder();
+        for(String s : inp){
+            sb.append("-").append(s).append("\n");
+        }
+        return sb;
     }
 
     public <T extends Comparable<T>> boolean process(int mid, T value){
@@ -112,6 +132,18 @@ public class Menu {
         else if(mid==0){
             if(value.equals(0))
                 return false;
+            else if (value.equals(1)){
+                showMenu(1);
+                String kw = readStringInput();
+                var ret = Manager.getInstance().getDefinitions(kw);
+                if(ret == null){
+                    System.out.println("> Không tìm thấy Slang word này");
+                }
+                else{
+                    System.out.println("> Ý nghĩa:");
+                    System.out.println(ListToString(ret).toString());
+                }
+            }
             else if (value.equals(7)){
                 showMenu(7);
                 int inp = readNumberInput(0, 1);
@@ -120,12 +152,8 @@ public class Menu {
             else if (value.equals(8)){
                 var ret = Manager.getInstance().getRandomWord();
                 System.out.println("> Từ ngẫu nhiên:" +ret.getKeyword());
-                StringBuilder sb = new StringBuilder();
-                for(String s : ret.getDefinitions()){
-                    sb.append("-").append(s).append("\n");
-                }
                 System.out.println("> Ý nghĩa:");
-                System.out.println(sb.toString());
+                System.out.println(ListToString(ret.getDefinitions()).toString());
             }
             System.out.print("Bấm enter để tiếp tục");
             try {
