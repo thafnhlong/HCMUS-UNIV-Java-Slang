@@ -112,10 +112,25 @@ public class Menu {
         else if(mid==0){
             if(value.equals(0))
                 return false;
-            if (value.equals(7)){
+            else if (value.equals(7)){
                 showMenu(7);
                 int inp = readNumberInput(0, 1);
                 process(7, inp);
+            }
+            else if (value.equals(8)){
+                var ret = Manager.getInstance().getRandomWord();
+                System.out.println("> Từ ngẫu nhiên:" +ret.getKeyword());
+                StringBuilder sb = new StringBuilder();
+                for(String s : ret.getDefinitions()){
+                    sb.append("-").append(s).append("\n");
+                }
+                System.out.println("> Ý nghĩa:");
+                System.out.println(sb.toString());
+            }
+            System.out.print("Bấm enter để tiếp tục");
+            try {
+                Screen.br.readLine();
+            } catch (IOException e) {
             }
         }
         else if(mid==7){

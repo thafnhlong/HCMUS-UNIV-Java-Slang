@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.TreeMap;
 
 import Menu.File;
@@ -30,6 +31,14 @@ public class Manager {
         return singleton;
     }
 
+    public SlangWord getRandomWord(){
+        var r = new Random();
+        int k = r.nextInt(DB.size());
+        var kw= (String)DB.keySet().toArray()[k];
+        var ldes = DB.get(kw);
+        return new SlangWord(kw,ldes);
+    }
+
     public void saveToDB() {
         File.writeObjectToFile(DbWorkFile, DB);
     }
@@ -50,7 +59,7 @@ public class Manager {
                 String[] pdata = curLine.split("`");
                 if(pdata.length < 2) continue;
                 String kw = pdata[0];
-                var definitions = new LinkedList<String>(Arrays.asList(pdata[1].split("\\|")));
+                var definitions = new LinkedList<String>(Arrays.asList(pdata[1].split("\\| ")));
                 var ldes = DB.get(kw);
                 if (ldes == null) {
                     DB.put(kw, definitions);
