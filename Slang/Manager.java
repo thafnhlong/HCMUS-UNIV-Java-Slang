@@ -35,6 +35,15 @@ public class Manager {
     public List<String> getDefinitions(String kw){
         return DB.get(kw);
     }
+    public List<String> getSlangWord(String definition){
+        var ll = new LinkedList<String>();
+        for(var lde :DB.entrySet()){
+            if(lde.getValue().contains(definition)){
+                ll.add(lde.getKey());
+            }
+        }
+        return ll;
+    }
 
     public SlangWord getRandomWord(){
         var r = new Random();

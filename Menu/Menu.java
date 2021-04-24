@@ -48,6 +48,10 @@ public class Menu {
             System.out.println("> Tìm kiếm theo slang word");
             System.out.print("> Nhập slang word: ");
         }
+        else if (mid == 2){
+            System.out.println("> Tìm kiếm theo definition");
+            System.out.print("> Nhập definition: ");
+        }
         else if (mid==7) {
             System.out.println("> Khôi phục slang word");
             System.out.println("> Bạn có chắc khôi phục từ điển về ban đầu không?");
@@ -141,6 +145,18 @@ public class Menu {
                 }
                 else{
                     System.out.println("> Ý nghĩa:");
+                    System.out.println(ListToString(ret).toString());
+                }
+            }
+            else if (value.equals(2)){
+                showMenu(2);
+                String defi = readStringInput();
+                var ret = Manager.getInstance().getSlangWord(defi);
+                if(ret.size()==0){
+                    System.out.println("> Không tìm thấy definition này");
+                }
+                else{
+                    System.out.println("> Slang word:");
                     System.out.println(ListToString(ret).toString());
                 }
             }
