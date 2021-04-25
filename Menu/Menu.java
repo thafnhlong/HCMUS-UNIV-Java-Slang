@@ -223,6 +223,27 @@ public class Menu {
                     System.out.println("> Đã chỉnh sửa thành công");
                 }
             }
+            else if (value.equals(6)){
+                System.out.println("> Xóa slang word");
+                System.out.print("> Từ viết tắt: ");
+                String kw = readStringInput();
+                var mgi = Manager.getInstance();
+                var ret = mgi.getDefinitions(kw);
+                if (ret == null ){
+                    System.out.println("> Không tìm thấy slang word này");
+                }
+                else {
+                    System.out.println("> Bạn có chắc xóa không ?");
+                    System.out.println("1.Có");
+                    System.out.println("0.Quay lại");
+                    int inp = readNumberInput(0, 1);
+                    if(inp == 0){
+                        return true;
+                    }
+                    mgi.removeItem(kw);
+                    System.out.println("> Đã xóa thành công");
+                }
+            }
             else if (value.equals(7)){
                 showMenu(7);
                 int inp = readNumberInput(0, 1);

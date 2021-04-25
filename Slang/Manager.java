@@ -64,6 +64,11 @@ public class Manager {
         saveToDB();
     }
 
+    public void removeItem(String kw){
+        DB.remove(kw);
+        saveToDB();
+    }
+
     public SlangWord getRandomWord(){
         var r = new Random();
         int k = r.nextInt(DB.size());
