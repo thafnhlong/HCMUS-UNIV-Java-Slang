@@ -30,7 +30,7 @@ public class Menu {
             System.out.println("> Khởi tạo");
             System.out.println("> Hệ thống lần đầu chạy, vui lòng chỉ ra đường dẫn file data");
             System.out.println("> File mặc định: " + DbRawFileDefault);
-            System.out.print("> Bạn có muốn thay đổi không : Có (c) và Không (k): ");
+            System.out.print("> Bạn có muốn thay đổi không? Có (c) hay Không (k): ");
 
         }
         else if (mid == 0) {
@@ -130,39 +130,45 @@ public class Menu {
     }
 
     public boolean loadGame(int type){
-        var mgi = Manager.getInstance();
-        Question gameData;
-        String option1;
-        String option2;
-        if(type==1){
-            System.out.println("> Game Lựa chọn definition theo slang word");
-            option1 = "Từ khóa đề cho: ";
-            option2 = "định nghĩa";
-            gameData = mgi.getKeyword();
-        } else {
-            System.out.println("> Game Lựa chọn slang word theo definition");
-            option1 = "Định nghĩa đề cho: ";
-            option2 = "từ khóa";
-            gameData = mgi.getDefinition();
+        while(true){
+            var mgi = Manager.getInstance();
+            Question gameData;
+            String option1;
+            String option2;
+            if(type==1){
+                System.out.println("> Game Lựa chọn definition theo slang word");
+                option1 = "Từ khóa đề cho: ";
+                option2 = "định nghĩa";
+                gameData = mgi.getKeyword();
+            } else {
+                System.out.println("> Game Lựa chọn slang word theo definition");
+                option1 = "Định nghĩa đề cho: ";
+                option2 = "từ khóa";
+                gameData = mgi.getDefinition();
+            }
+            System.out.println("> " + option1 + gameData.getQues());
+            System.out.println("> Hãy chọn "+option2 + " đúng nhất: ");
+            int i=1;
+            for(String ques: gameData.getAns()){
+                System.out.println(i+++"." + ques);
+            }
+            System.out.println("0.Quay lại");
+            System.out.print("Bạn chọn: ");
+            int inp = readNumberInput(0, 4);
+            int rga = gameData.getRightAns();
+            if(inp == 0)
+                return true;
+            if (inp == rga+1){
+                System.out.println("> Chúc mừng, bạn đã trả lời chính xác");
+            } else {
+                System.out.println("> Sai rồi, phải là đáp án " +(rga+1)+"."+gameData.getAns()[rga] + ", chúc bạn may mắn lần sau");
+            }
+            
+            System.out.print("> Bạn có muốn tiếp tục (c) hay quay về menu (k): ");
+            String inpR = readStringInput(new String[]{"c","k"});
+            if(inpR.equals("k"))
+                return false;
         }
-        System.out.println("> " + option1 + gameData.getQues());
-        System.out.println("> Hãy chọn "+option2 + " đúng nhất: ");
-        int i=1;
-        for(String ques: gameData.getAns()){
-            System.out.println(i+++"." + ques);
-        }
-        System.out.println("0.Quay lại");
-        System.out.print("Bạn chọn: ");
-        int inp = readNumberInput(0, 4);
-        int rga = gameData.getRightAns();
-        if(inp == 0)
-            return false;
-        if (inp == rga+1){
-            System.out.println("> Chúc mừng, bạn đã trả lời chính xác");
-        } else {
-            System.out.println("> Sai rồi, phải là đáp án " +(rga+1)+"."+gameData.getAns()[rga] + ", chúc bạn may mắn lần sau");
-        }
-        return true;
     }
 
     public <T extends Comparable<T>> boolean process(int mid, T value){
@@ -184,32 +190,6 @@ public class Menu {
         else if(mid==0){
             if(value.equals(0))
                 return false;
-            else if (value.equals(1)){
-                showMenu(1);
-                String kw = readStringInput();
-                var ret = Manager.getInstance().getDefinitions(kw);
-                if(ret == null){
-                    System.out.println("> Không tìm thấy slang word này");
-                }
-                else{
-                    System.out.println("> Ý nghĩa:");
-                    System.out.println(ListToString(ret).toString());
-                }
-                writeHistory(1, kw);
-            }
-            else if (value.equals(2)){
-                showMenu(2);
-                String defi = readStringInput();
-                var ret = Manager.getInstance().getSlangWord(defi);
-                if(ret.size()==0){
-                    System.out.println("> Không tìm thấy definition này");
-                }
-                else{
-                    System.out.println("> Slang word:");
-                    System.out.println(ListToString(ret).toString());
-                }
-                writeHistory(2, defi);
-            }
             else if (value.equals(3)){
                 System.out.println("> Lịch sử tìm kiếm:");
                 String ret = File.readTextFromFile(DbHistoryFile);
@@ -217,68 +197,6 @@ public class Menu {
                     System.out.println("> Không có dữ liệu");
                 }else {
                     System.out.println(ret);
-                }
-            }
-            else if (value.equals(4)){
-                System.out.println("> Thêm slang word:");
-                System.out.print("> Từ viết tắt: ");
-                String kw = readStringInput();
-                System.out.print("> Định nghĩa: ");
-                String defi = readStringInput();
-                var ret = Manager.getInstance().getDefinitions(kw);
-                boolean add = false;
-                boolean isNew = true;
-                if (ret != null ){
-                    isNew = false;
-                    System.out.println("> Phát hiện từ khóa " + kw + " đã tồn tại, bạn muốn: ");
-                    System.out.println("1.Overwrite - Thay thế định nghĩa hiện tại");
-                    System.out.println("2.Duplicate - Thêm 1 định nghĩa mới");
-                    System.out.println("0.Quay lại");
-                    int inp = readNumberInput(0, 2);
-                    if(inp == 2){
-                        add = true;
-                    } else if(inp == 0){
-                        return true;
-                    }
-                }
-                Manager.getInstance().insertItem(isNew,kw, defi, add);
-                System.out.println("> Đã thêm vào từ điển Slang");
-            }
-            else if (value.equals(5)){
-                System.out.println("> Chỉnh sửa slang word");
-                System.out.print("> Từ viết tắt: ");
-                String kw = readStringInput();
-                var mgi = Manager.getInstance();
-                var ret = mgi.getDefinitions(kw);
-                if (ret == null ){
-                    System.out.println("> Không tìm thấy slang word này");
-                }
-                else {
-                    System.out.print("> Định nghĩa mới: ");
-                    String defi = readStringInput();
-                    mgi.updateItem(kw, defi, false);
-                    System.out.println("> Đã chỉnh sửa thành công");
-                }
-            }
-            else if (value.equals(6)){
-                System.out.println("> Xóa slang word");
-                System.out.print("> Từ viết tắt: ");
-                String kw = readStringInput();
-                var mgi = Manager.getInstance();
-                var ret = mgi.getDefinitions(kw);
-                if (ret == null ){
-                    System.out.println("> Không tìm thấy slang word này");
-                }
-                else {
-                    System.out.println("> Bạn có chắc xóa không ?");
-                    System.out.println("1.Có");
-                    System.out.println("0.Quay lại");
-                    int inp = readNumberInput(0, 1);
-                    if(inp == 0){
-                        return true;
-                    }
-                    mgi.removeItem(kw);
-                    System.out.println("> Đã xóa thành công");
                 }
             }
             else if (value.equals(7)){
@@ -289,17 +207,119 @@ public class Menu {
                 }
                 System.out.println("> Đã khôi phục từ điển Slang về  mặc định");
             }
-            else if (value.equals(8)){
-                var ret = Manager.getInstance().getRandomWord();
-                System.out.println("> Từ ngẫu nhiên: " +ret.getKeyword());
-                System.out.println("> Ý nghĩa:");
-                System.out.println(ListToString(ret.getDefinitions()).toString());
-            }
             else if (value.equals(9)){
-                showMenu(9);
-                int inp = readNumberInput(0,2);
-                if(inp==0 || !loadGame(inp))
-                    return true;
+                while(true){
+                    showMenu(9);
+                    int inp = readNumberInput(0,2);
+                    if(inp==0)
+                        return true;
+                    if (!loadGame(inp))
+                        return true;
+                }
+            }
+            else {
+                while(true){
+                    if (value.equals(1)){
+                        showMenu(1);
+                        String kw = readStringInput();
+                        var ret = Manager.getInstance().getDefinitions(kw);
+                        if(ret == null){
+                            System.out.println("> Không tìm thấy slang word này");
+                        }
+                        else{
+                            System.out.println("> Ý nghĩa:");
+                            System.out.println(ListToString(ret).toString());
+                        }
+                        writeHistory(1, kw);
+                    }
+                    else if (value.equals(2)){
+                        showMenu(2);
+                        String defi = readStringInput();
+                        var ret = Manager.getInstance().getSlangWord(defi);
+                        if(ret.size()==0){
+                            System.out.println("> Không tìm thấy definition này");
+                        }
+                        else{
+                            System.out.println("> Slang word:");
+                            System.out.println(ListToString(ret).toString());
+                        }
+                        writeHistory(2, defi);
+                    }
+                    else if (value.equals(4)){
+                        System.out.println("> Thêm slang word:");
+                        System.out.print("> Từ viết tắt: ");
+                        String kw = readStringInput();
+                        System.out.print("> Định nghĩa: ");
+                        String defi = readStringInput();
+                        var ret = Manager.getInstance().getDefinitions(kw);
+                        boolean add = false;
+                        boolean isNew = true;
+                        if (ret != null ){
+                            isNew = false;
+                            System.out.println("> Phát hiện từ khóa " + kw + " đã tồn tại, bạn muốn: ");
+                            System.out.println("1.Overwrite - Thay thế định nghĩa hiện tại");
+                            System.out.println("2.Duplicate - Thêm 1 định nghĩa mới");
+                            System.out.println("0.Quay lại");
+                            int inp = readNumberInput(0, 2);
+                            if(inp == 2){
+                                add = true;
+                            } else if(inp == 0){
+                                return true;
+                            }
+                        }
+                        Manager.getInstance().insertItem(isNew,kw, defi, add);
+                        System.out.println("> Đã thêm vào từ điển Slang");
+                    }
+                    else if (value.equals(5)){
+                        System.out.println("> Chỉnh sửa slang word");
+                        System.out.print("> Từ viết tắt: ");
+                        String kw = readStringInput();
+                        var mgi = Manager.getInstance();
+                        var ret = mgi.getDefinitions(kw);
+                        if (ret == null ){
+                            System.out.println("> Không tìm thấy slang word này");
+                        }
+                        else {
+                            System.out.print("> Định nghĩa mới: ");
+                            String defi = readStringInput();
+                            mgi.updateItem(kw, defi, false);
+                            System.out.println("> Đã chỉnh sửa thành công");
+                        }
+                    }
+                    else if (value.equals(6)){
+                        System.out.println("> Xóa slang word");
+                        System.out.print("> Từ viết tắt: ");
+                        String kw = readStringInput();
+                        var mgi = Manager.getInstance();
+                        var ret = mgi.getDefinitions(kw);
+                        if (ret == null ){
+                            System.out.println("> Không tìm thấy slang word này");
+                        }
+                        else {
+                            System.out.println("> Bạn có chắc xóa không ?");
+                            System.out.println("1.Có");
+                            System.out.println("0.Quay lại");
+                            int inp = readNumberInput(0, 1);
+                            if(inp == 0){
+                                return true;
+                            }
+                            mgi.removeItem(kw);
+                            System.out.println("> Đã xóa thành công");
+                        }
+                    }
+                    else if (value.equals(8)){
+                        var ret = Manager.getInstance().getRandomWord();
+                        System.out.println("> Từ ngẫu nhiên: " +ret.getKeyword());
+                        System.out.println("> Ý nghĩa:");
+                        System.out.println(ListToString(ret.getDefinitions()).toString());
+                    }
+                    
+                    System.out.print("> Bạn có muốn tiếp tục (c) hay quay về menu (k): ");
+                    String inp = readStringInput(new String[]{"c","k"});
+                    if(inp.equals("k"))
+                        return true;
+                }
+
             }
             System.out.print("Bấm enter để tiếp tục");
             try {
