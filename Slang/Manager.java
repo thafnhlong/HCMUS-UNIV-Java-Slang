@@ -16,10 +16,7 @@ public class Manager {
     public static String DbWorkFile=null;
 
     private Manager(){
-        DB = File.readObjectFromFile(DbWorkFile);
-        if(DB==null){
-            DB = new TreeMap<>();
-        }
+        resetDB();
     }
 
     public static Manager getInstance() {
@@ -109,5 +106,12 @@ public class Manager {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    public void resetDB(){
+        DB = File.readObjectFromFile(DbWorkFile);
+        if(DB==null){
+            DB = new TreeMap<>();
+        }
     }
 }

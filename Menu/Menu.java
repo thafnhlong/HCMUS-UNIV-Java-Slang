@@ -152,7 +152,7 @@ public class Menu {
                 String kw = readStringInput();
                 var ret = Manager.getInstance().getDefinitions(kw);
                 if(ret == null){
-                    System.out.println("> Không tìm thấy Slang word này");
+                    System.out.println("> Không tìm thấy slang word này");
                 }
                 else{
                     System.out.println("> Ý nghĩa:");
@@ -246,6 +246,7 @@ public class Menu {
         else if(mid==7){
             if(value.equals(1)){
                 File.copyFile(DbFile,DbWorkFile);
+                Manager.getInstance().resetDB();
                 return true;
             }
             return false;
