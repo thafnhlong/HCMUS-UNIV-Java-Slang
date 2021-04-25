@@ -1,10 +1,15 @@
 package Menu;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 
 public class File {
     public static boolean isExist(String pathName){
@@ -47,5 +52,34 @@ public class File {
             os.close();
         } catch (IOException e) {
         }            
+    }
+    public static void appendFile(String path, String value){
+        try(FileWriter fw = new FileWriter(path, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            out.println(value);
+        } catch (IOException e) {
+        }
+    }
+    public static String readTextFromFile(String path){
+        if (isExist(path)){
+            try {
+                BufferedReader br = new BufferedReader(
+                    new FileReader(path)
+                );
+                StringBuilder sb = new StringBuilder();
+                String curLine = null;
+                while ((curLine = br.readLine()) != null) {
+                    sb.append(curLine).append("\n");
+                }
+                br.close();
+                if(sb.length()>0)
+                    return sb.toString();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return null;
     }
 }

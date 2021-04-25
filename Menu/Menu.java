@@ -10,6 +10,7 @@ public class Menu {
     public static final String DbFile = "origin.bin";
     public static final String DbWorkFile = "work.bin";
     public static final String DbRawFileDefault = "slang.txt";
+    public static final String DbHistoryFile = "history.txt";
     
     public Menu(){
         Manager.DbWorkFile = DbWorkFile;
@@ -109,6 +110,16 @@ public class Menu {
         }
     }
 
+    public void writeHistory(int type, String value){
+        String ret = null;
+        if (type==1){
+            ret = "-Keyword: " + value;
+        } else {
+            ret = "-Definition: " + value;
+        }
+        File.appendFile(DbHistoryFile, ret);
+    }
+
     public StringBuilder ListToString(List<String> inp){
         StringBuilder sb = new StringBuilder();
         for(String s : inp){
@@ -147,6 +158,7 @@ public class Menu {
                     System.out.println("> Ý nghĩa:");
                     System.out.println(ListToString(ret).toString());
                 }
+                writeHistory(1, kw);
             }
             else if (value.equals(2)){
                 showMenu(2);
@@ -158,6 +170,16 @@ public class Menu {
                 else{
                     System.out.println("> Slang word:");
                     System.out.println(ListToString(ret).toString());
+                }
+                writeHistory(2, defi);
+            }
+            else if (value.equals(3)){
+                System.out.println("> Lịch sử tìm kiếm:");
+                String ret = File.readTextFromFile(DbHistoryFile);
+                if (ret==null){
+                    System.out.println("> Không có dữ liệu");
+                }else {
+                    System.out.println(ret);
                 }
             }
             else if (value.equals(7)){
