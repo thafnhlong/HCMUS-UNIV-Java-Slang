@@ -50,14 +50,19 @@ public class Manager {
             var re = new LinkedList<String>();
             re.add(defi);
             DB.put(kw, re);
+            saveToDB();
         } else {
-            var e = DB.get(kw);
-            if (add) {
-                e.add(defi);
-            } else {
-                e.clear();
-                e.add(defi);
-            }
+            updateItem(kw,defi,add);
+        }
+    }
+
+    public void updateItem(String kw, String defi, boolean add){
+        var e = DB.get(kw);
+        if (add) {
+            e.add(defi);
+        } else {
+            e.clear();
+            e.add(defi);
         }
         saveToDB();
     }

@@ -207,6 +207,22 @@ public class Menu {
                 Manager.getInstance().insertItem(isNew,kw, defi, add);
                 System.out.println("> Đã thêm vào từ điển Slang");
             }
+            else if (value.equals(5)){
+                System.out.println("> Chỉnh sửa slang word");
+                System.out.print("> Từ viết tắt: ");
+                String kw = readStringInput();
+                var mgi = Manager.getInstance();
+                var ret = mgi.getDefinitions(kw);
+                if (ret == null ){
+                    System.out.println("> Không tìm thấy slang word này");
+                }
+                else {
+                    System.out.print("> Định nghĩa mới: ");
+                    String defi = readStringInput();
+                    mgi.updateItem(kw, defi, false);
+                    System.out.println("> Đã chỉnh sửa thành công");
+                }
+            }
             else if (value.equals(7)){
                 showMenu(7);
                 int inp = readNumberInput(0, 1);
