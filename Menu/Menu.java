@@ -182,10 +182,38 @@ public class Menu {
                     System.out.println(ret);
                 }
             }
+            else if (value.equals(4)){
+                System.out.println("> Thêm slang word:");
+                System.out.print("> Từ viết tắt: ");
+                String kw = readStringInput();
+                System.out.print("> Định nghĩa: ");
+                String defi = readStringInput();
+                var ret = Manager.getInstance().getDefinitions(kw);
+                boolean add = false;
+                boolean isNew = true;
+                if (ret != null ){
+                    isNew = false;
+                    System.out.println("> Phát hiện từ khóa " + kw + " đã tồn tại, bạn muốn: ");
+                    System.out.println("1.Overwrite - Thay thế định nghĩa hiện tại");
+                    System.out.println("2.Duplicate - Thêm 1 định nghĩa mới");
+                    System.out.println("0.Quay lại");
+                    int inp = readNumberInput(0, 2);
+                    if(inp == 2){
+                        add = true;
+                    } else if(inp == 0){
+                        return true;
+                    }
+                }
+                Manager.getInstance().insertItem(isNew,kw, defi, add);
+                System.out.println("> Đã thêm vào từ điển Slang");
+            }
             else if (value.equals(7)){
                 showMenu(7);
                 int inp = readNumberInput(0, 1);
-                process(7, inp);
+                if(!process(7, inp)){
+                    return true;
+                }
+                System.out.println("> Đã khôi phục từ điển Slang về  mặc định");
             }
             else if (value.equals(8)){
                 var ret = Manager.getInstance().getRandomWord();
@@ -202,7 +230,9 @@ public class Menu {
         else if(mid==7){
             if(value.equals(1)){
                 File.copyFile(DbFile,DbWorkFile);
+                return true;
             }
+            return false;
         }
         return true;
     }

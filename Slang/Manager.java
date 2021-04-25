@@ -45,6 +45,23 @@ public class Manager {
         return ll;
     }
 
+    public void insertItem(boolean isNew, String kw, String defi, boolean add){
+        if (isNew) {
+            var re = new LinkedList<String>();
+            re.add(defi);
+            DB.put(kw, re);
+        } else {
+            var e = DB.get(kw);
+            if (add) {
+                e.add(defi);
+            } else {
+                e.clear();
+                e.add(defi);
+            }
+        }
+        saveToDB();
+    }
+
     public SlangWord getRandomWord(){
         var r = new Random();
         int k = r.nextInt(DB.size());
