@@ -105,6 +105,34 @@ public class Manager {
         return new Question(question.getKeyword(), retAnswer, ra);
     }
 
+    public Question getDefinition(){
+        var question = getRandomWord();
+        var defi = question.getDefinitions();
+        var r = new Random();
+
+        var questionForKeywordIndex = r.nextInt(defi.size());
+        var questionForKeyword = defi.get(questionForKeywordIndex);
+        var answer = question.getKeyword();
+
+        int id=0;
+        String[] retAnswer = new String[4];
+        while(id<3){
+            var newSlangWord = getRandomWord();
+            var newKeyword = newSlangWord.getKeyword();
+            if(newKeyword.equals(answer))
+                continue;
+            var newAnswer = newSlangWord.getDefinitions();
+            if (!newAnswer.contains(questionForKeyword)){
+                retAnswer[id++]= newKeyword;
+            }
+        }
+        retAnswer[id] = answer;
+        Util.Array.shuffleArray(retAnswer);
+        
+        int ra =  Arrays.asList(retAnswer).indexOf(answer);
+        return new Question(questionForKeyword, retAnswer, ra);
+    }
+
     public void saveToDB() {
         File.writeObjectToFile(DbWorkFile, DB);
     }

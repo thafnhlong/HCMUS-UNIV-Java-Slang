@@ -131,17 +131,19 @@ public class Menu {
 
     public boolean loadGame(int type){
         var mgi = Manager.getInstance();
-        Question gameData = mgi.getKeyword();
+        Question gameData;
         String option1;
         String option2;
         if(type==1){
             System.out.println("> Game Lựa chọn definition theo slang word");
             option1 = "Từ khóa đề cho: ";
             option2 = "định nghĩa";
+            gameData = mgi.getKeyword();
         } else {
             System.out.println("> Game Lựa chọn slang word theo definition");
             option1 = "Định nghĩa đề cho: ";
             option2 = "từ khóa";
+            gameData = mgi.getDefinition();
         }
         System.out.println("> " + option1 + gameData.getQues());
         System.out.println("> Hãy chọn "+option2 + " đúng nhất: ");
