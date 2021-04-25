@@ -77,6 +77,34 @@ public class Manager {
         return new SlangWord(kw,ldes);
     }
 
+    public Question getKeyword(){
+        var question = getRandomWord();
+        var answer = question.getDefinitions();
+
+        var r = new Random();
+
+        var rightAnswerIndex = r.nextInt(answer.size());
+        var rightAnswer = answer.get(rightAnswerIndex);
+
+        int id=0;
+        String[] retAnswer = new String[4];
+        while(id<3){
+            var newSlangWord = getRandomWord();
+            var newAnswer = newSlangWord.getDefinitions();
+            for(String newDefi: newAnswer){
+                if (!answer.contains(newDefi)){
+                    retAnswer[id++]= newDefi;
+                }
+                if(id == 3) break;
+            }
+        }
+        retAnswer[id] = rightAnswer;
+        Util.Array.shuffleArray(retAnswer);
+        
+        int ra =  Arrays.asList(retAnswer).indexOf(rightAnswer);
+        return new Question(question.getKeyword(), retAnswer, ra);
+    }
+
     public void saveToDB() {
         File.writeObjectToFile(DbWorkFile, DB);
     }

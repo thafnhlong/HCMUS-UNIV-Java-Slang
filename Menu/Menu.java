@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import Slang.Manager;
+import Slang.Question;
 
 public class Menu {
     public static final String DbFile = "origin.bin";
@@ -61,8 +62,8 @@ public class Menu {
         }
         else if (mid==9) {
             System.out.println("> Đố vui");
-            System.out.println("1.Tìm kiếm theo slang word");
-            System.out.println("2.Tìm kiếm theo definition");
+            System.out.println("1.Lựa chọn definition theo slang word");
+            System.out.println("2.Lựa chọn slang word theo definition");
             System.out.println("0.Quay lại");
         }
     }
@@ -126,6 +127,40 @@ public class Menu {
             sb.append("-").append(s).append("\n");
         }
         return sb;
+    }
+
+    public boolean loadGame(int type){
+        var mgi = Manager.getInstance();
+        Question gameData = mgi.getKeyword();
+        String option1;
+        String option2;
+        if(type==1){
+            System.out.println("> Game Lựa chọn definition theo slang word");
+            option1 = "Từ khóa đề cho: ";
+            option2 = "định nghĩa";
+        } else {
+            System.out.println("> Game Lựa chọn slang word theo definition");
+            option1 = "Định nghĩa đề cho: ";
+            option2 = "từ khóa";
+        }
+        System.out.println("> " + option1 + gameData.getQues());
+        System.out.println("> Hãy chọn "+option2 + " đúng nhất: ");
+        int i=1;
+        for(String ques: gameData.getAns()){
+            System.out.println(i+++"." + ques);
+        }
+        System.out.println("0.Quay lại");
+        System.out.print("Bạn chọn: ");
+        int inp = readNumberInput(0, 4);
+        int rga = gameData.getRightAns();
+        if(inp == 0)
+            return false;
+        if (inp == rga+1){
+            System.out.println("> Chúc mừng, bạn đã trả lời chính xác");
+        } else {
+            System.out.println("> Sai rồi, phải là đáp án " +(rga+1)+"."+gameData.getAns()[rga] + ", chúc bạn may mắn lần sau");
+        }
+        return true;
     }
 
     public <T extends Comparable<T>> boolean process(int mid, T value){
@@ -254,9 +289,15 @@ public class Menu {
             }
             else if (value.equals(8)){
                 var ret = Manager.getInstance().getRandomWord();
-                System.out.println("> Từ ngẫu nhiên:" +ret.getKeyword());
+                System.out.println("> Từ ngẫu nhiên: " +ret.getKeyword());
                 System.out.println("> Ý nghĩa:");
                 System.out.println(ListToString(ret.getDefinitions()).toString());
+            }
+            else if (value.equals(9)){
+                showMenu(9);
+                int inp = readNumberInput(0,2);
+                if(inp==0 || !loadGame(inp))
+                    return true;
             }
             System.out.print("Bấm enter để tiếp tục");
             try {
