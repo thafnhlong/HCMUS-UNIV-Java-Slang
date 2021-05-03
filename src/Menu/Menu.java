@@ -153,7 +153,6 @@ public class Menu {
                 System.out.println(i+++"." + ques);
             }
             System.out.println("0.Quay lại");
-            System.out.print("Bạn chọn: ");
             int inp = readNumberInput(0, 4);
             int rga = gameData.getRightAns();
             if(inp == 0)
